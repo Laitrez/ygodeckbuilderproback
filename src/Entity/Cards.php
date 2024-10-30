@@ -45,23 +45,26 @@ class Cards
     private string $md_rarity;
 
     #[ORM\OneToMany(targetEntity: DeckCards::class, mappedBy: 'card')]
-    #[Groups(['card:read'])]
+    // #[Groups(['card:read'])]
     private Collection $deck_cards;
 
     #[ORM\ManyToOne(targetEntity: CardType::class)]
     #[ORM\JoinColumn(name: 'cardTypeId', referencedColumnName: 'id')]
+    #[Groups(['card:read'])]
     private CardType $type;
 
     #[ORM\ManyToOne(targetEntity: CardRace::class)]
     #[ORM\JoinColumn(name: 'cardRaceId', referencedColumnName: 'id')]
+    #[Groups(['card:read'])]
     private CardRace $race;
 
     #[ORM\ManyToOne(targetEntity: CardArchetype::class)]
     #[ORM\JoinColumn(name: 'cardArchetypeId', referencedColumnName: 'id')]
+    #[Groups(['card:read'])]
     private CardArchetype $archetype;
 
     #[ORM\OneToMany(targetEntity: UserCards::class, mappedBy: 'card')]
-    #[Groups(['card:read'])]
+    // #[Groups(['card:read'])]
     private Collection $userCards;
 
     public function __construct()

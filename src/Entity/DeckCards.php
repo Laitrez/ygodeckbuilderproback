@@ -18,7 +18,7 @@ class DeckCards
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Cards::class)]
     #[ORM\JoinColumn(name: 'cardId', referencedColumnName: 'id')]
-    #[Groups(['deck:read', 'card:read'])]
+    #[Groups(['deck:read'])]
     private Cards $card;
 
     #[ORM\Column(type: 'integer')]

@@ -5,6 +5,7 @@ use App\Repository\CardRaceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CardRaceRepository::class)]
 class CardRace
@@ -12,9 +13,11 @@ class CardRace
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['card:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string')]
+    #[Groups(['card:read'])]
     private string $name;
 
     #[ORM\OneToMany(targetEntity: Cards::class, mappedBy: 'race')]

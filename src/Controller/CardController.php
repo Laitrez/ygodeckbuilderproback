@@ -24,26 +24,42 @@ class CardController extends AbstractController
     }
 
     #[Route('/', name: 'get_cards', methods:['GET']) ]
-    public function getCards(/*SerializerInterface $serializer*/): JsonResponse
+    public function getCards(SerializerInterface $serializer): JsonResponse
     {
         $cards = $this->entityManager->getRepository(Cards::class)->findAll();
+        // dd($cards);
 
-        return $this->json($cards);
+        // return $this->json($cards);
         // return new JsonResponse($decksJson);
         // return $this->json([
         //     'message' => 'Welcome to your new controller!',
         //     'path' => 'src/Controller/DeckController.php',
         // ]);
+            // Sérialiser les cartes avec les groupes définis pour exposer uniquement les champs désirés
+            // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
+
+            // Retourner une réponse JSON avec les cartes sérialisées
+            // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
+            return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
     }
 
 
     #[Route('/{id}', name: 'app_card', methods:['GET']) ]
-    public function getCard(int $id): JsonResponse
+    public function getCard(int $id,SerializerInterface $serializer): JsonResponse
     {
         $cards = $this->entityManager->getRepository(Cards::class)->find($id);
+        // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
 
-        return $this->json($cards);
+        // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
+        return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
     }
+
+
+
+
+
+
+
     #[Route('/', name: 'create_card', methods: ['POST'])]
     public function createCard(Request $request, UrlGeneratorInterface $urlGenerator, SerializerInterface $serializer): JsonResponse
     {
