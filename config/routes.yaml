@@ -1,0 +1,25 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+decks:
+    resource: '../src/Controller/DeckController.php'
+    type: attribute
+    prefix: /api
+
+cards:
+    resource: '../src/Controller/CardController.php'
+    type: attribute
+    prefix: /api/cards
+
+users:
+    resource: '../src/Controller/UserController.php'
+    type: attribute
+    prefix: /api
+
+usercards:
+    resource: '../src/Controller/UserCardsController.php'
+    type: attribute
+    prefix: /api
