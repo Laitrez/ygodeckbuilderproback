@@ -1,14 +1,15 @@
 <?php
 namespace App\Entity;
 
+use App\Repository\CardRepository;
 use App\Repository\CardsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: CardsRepository::class)]
-class Cards
+#[ORM\Entity(repositoryClass: CardRepository::class)]
+class Card
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
