@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Card;
+use App\Entity\Cards;
 use App\Entity\DeckCards;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -85,7 +85,7 @@ class DeckController extends AbstractController
                     $occurs = $cardData['occurs'];
 
                     // Vérifier si une carte avec ce Konami ID existe déjà
-                    $card = $this->entityManager->getRepository(Card::class)->findOneBy(['id' => $cardData['card_id']]);
+                    $card = $this->entityManager->getRepository(Cards::class)->findOneBy(['id' => $cardData['card_id']]);
                     $Dcard = new DeckCards();
                     $Dcard->setCard($card);
                     $Dcard->setDeck($deck);

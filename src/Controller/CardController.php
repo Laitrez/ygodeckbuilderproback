@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Card;
+use App\Entity\Cards;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,7 +26,7 @@ class CardController extends AbstractController
     #[Route('/', name: 'get_cards', methods:['GET']) ]
     public function getCards(SerializerInterface $serializer): JsonResponse
     {
-        $cards = $this->entityManager->getRepository(Card::class)->findAll();
+        $cards = $this->entityManager->getRepository(Cards::class)->findAll();
         // dd($cards);
 
         // return $this->json($cards);
@@ -47,7 +47,7 @@ class CardController extends AbstractController
     #[Route('/{id}', name: 'app_card', methods:['GET']) ]
     public function getCard(int $id,SerializerInterface $serializer): JsonResponse
     {
-        $cards = $this->entityManager->getRepository(Card::class)->find($id);
+        $cards = $this->entityManager->getRepository(Cards::class)->find($id);
         // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
 
         // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
@@ -64,7 +64,7 @@ class CardController extends AbstractController
     public function createCard(Request $request, UrlGeneratorInterface $urlGenerator, SerializerInterface $serializer): JsonResponse
     {
 
-        $cards = $serializer->deserialize($request->getContent(), Card::class, 'json');
+        $cards = $serializer->deserialize($request->getContent(), Cards::class, 'json');
         $this->entityManager->persist($cards);
         $this->entityManager->flush();
 

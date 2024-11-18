@@ -1,24 +1,26 @@
 <?php
+
 namespace App\Entity;
 
-use App\Repository\CardRepository;
+// use App\Repository\CardRepository;
 use App\Repository\CardsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: CardRepository::class)]
-class Card
+#[ORM\Entity(repositoryClass: CardsRepository::class)]
+#[ORM\Table(name: 'card')]
+class Cards
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['card:read','usercards:read', 'deck:read'])]
+    #[Groups(['card:read', 'usercards:read', 'deck:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string')]
-    #[Groups(['card:read','usercards:read', 'deck:read'])]
+    #[Groups(['card:read', 'usercards:read', 'deck:read'])]
     private string $name;
 
     #[ORM\Column(type: 'string')]
@@ -29,20 +31,20 @@ class Card
     #[Groups(['card:read'])]
     private string $name_en;
 
-    #[ORM\Column(type: 'string', name: 'ygoprodecUrl')]
+    #[ORM\Column(type: 'string', name: 'ygoprodeck_url')]
     #[Groups(['card:read'])]
     private string $ygoprodeck_url;
 
-    #[ORM\Column(type: 'integer', name: 'betaId')]
+    #[ORM\Column(type: 'integer', name: 'beta_id')]
     #[Groups(['card:read'])]
     private int $beta_id;
 
-    #[ORM\Column(type: 'integer', name: 'konamiId')]
-    #[Groups(['card:read','usercards:read'])]
+    #[ORM\Column(type: 'integer', name: 'konami_id')]
+    #[Groups(['card:read', 'usercards:read'])]
     private int $konami_id;
 
-    #[ORM\Column(type: 'string', name: 'mdRarity')]
-    #[Groups(['card:read','usercards:read'])]
+    #[ORM\Column(type: 'string', name: 'md_rarity')]
+    #[Groups(['card:read', 'usercards:read'])]
     private string $md_rarity;
 
     #[ORM\OneToMany(targetEntity: DeckCards::class, mappedBy: 'card')]
@@ -68,10 +70,33 @@ class Card
     // #[Groups(['card:read'])]
     private Collection $userCards;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="CardSet", inversedBy="card")
+     * @ORM\JoinTable(name="card_sets_relation")
+     */
+    // #[ORM\ManyToMany(targetEntity: CardSets::class)]
+    // #[ORM\JoinTable(name: 'CardSetId', referencedColumnName: 'id')]
+    // #[Groups(['card:read'])]
+    // private Collection $cardSets;
+    #[ORM\ManyToMany(targetEntity: CardSets::class, inversedBy: 'cards')]
+    // #[ORM\JoinTable(name: '_cardsetsrelation')]
+    #[ORM\JoinTable(
+        name: '_cardsetsrelation', 
+        joinColumns: [
+            new ORM\JoinColumn(name: 'A', referencedColumnName: 'id') // Colonne de la table Card
+        ], 
+        inverseJoinColumns: [
+            new ORM\JoinColumn(name: 'B', referencedColumnName: 'id') // Colonne de la table CardSets
+        ]
+    )]
+    #[Groups(['card:read'])]
+    private Collection $cardSets;
+
     public function __construct()
     {
         $this->deck_cards = new ArrayCollection();
         $this->userCards = new ArrayCollection();
+        $this->cardSets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -197,5 +222,29 @@ class Card
     public function getUserCards(): Collection
     {
         return $this->userCards;
+    }
+    ////////////////////////////////////
+    public function getCardSets(): Collection
+    {
+        return $this->cardSets;
+    }
+
+    public function addCardSets(CardSets $set): self
+    {
+        if (!$this->cardSets->contains($set)) {
+            $this->cardSets->add($set) ;
+            $set->addCard($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCardSets(CardSets $set): self
+    {
+        if ($this->cardSets->removeElement($set)) {
+            $set->removeCard($this);
+        }
+
+        return $this;
     }
 }

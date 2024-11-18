@@ -2,6 +2,8 @@
 namespace App\Entity;
 
 use App\Repository\CardSetsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -11,28 +13,37 @@ class CardSets
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['cardSet:read'])]
+    #[Groups(['cardSet:read','card:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', name: 'set_name')]
-    #[Groups(['cardSet:read'])]
+    #[Groups(['cardSet:read','card:read'])]
     private string $setName;
 
     #[ORM\Column(type: 'integer', name: 'set_code')]
-    #[Groups(['cardSet:read'])]
+    #[Groups(['cardSet:read','card:read'])]
     private int $setCode;
 
     #[ORM\Column(type: 'string', name: 'set_rarity')]
-    #[Groups(['cardSet:read'])]
+    #[Groups(['cardSet:read','card:read'])]
     private string $setRarity;
 
     #[ORM\Column(type: 'integer', name: 'set_rarity_code')]
-    #[Groups(['cardSet:read'])]
+    #[Groups(['cardSet:read','card:read'])]
     private int $setRarity_code;
 
     #[ORM\Column(type: 'float', name: 'set_price')]
-    #[Groups(['cardSet:read'])]
+    #[Groups(['cardSet:read','card:read'])]
     private float $setPrice;
+
+    #[ORM\ManyToMany(targetEntity: Cards::class, mappedBy: 'cardSets')]
+    #[Groups(['cardSet:read'])]
+    private Collection $cards;
+
+    public function __construct()
+    {
+        $this->cards = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,4 +104,29 @@ class CardSets
         $this->setPrice = $setPrice;
         return $this;
     }
+    /////////////////////////////////////////////////////////
+    public function getCards(): Collection
+    {
+        return $this->cards;
+    }
+
+    public function addCard(Cards $card): self
+    {
+        if (!$this->cards->contains($card)) {
+            $this->cards->add($card);
+            $card->addCardSets($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCard(Cards $card): self
+    {
+        if ($this->cards->removeElement($card)) {
+            $card->removeCardSets($this);
+        }
+
+        return $this;
+    }
+
 }
