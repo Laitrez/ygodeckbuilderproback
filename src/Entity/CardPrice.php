@@ -15,25 +15,25 @@ class CardPrice
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'integer', name: 'cardmarket_price')]
+    #[ORM\Column(type: 'string', name: 'cardmarket_price')]
     #[Groups(['cardprices:read','card:read'])]
-    private int $cardmarketPrice;
+    private string $cardmarketPrice;
 
-    #[ORM\Column(type: 'integer', name: 'tcgplayer_price')]
+    #[ORM\Column(type: 'string', name: 'tcgplayer_price')]
     #[Groups(['cardprices:read','card:read'])]
-    private int $tcgplayerPrice;
+    private string $tcgplayerPrice;
 
-    #[ORM\Column(type: 'integer', name: 'ebay_price')]
+    #[ORM\Column(type: 'string', name: 'ebay_price')]
     #[Groups(['cardprices:read','card:read'])]
-    private int $ebayPrice;
+    private string $ebayPrice;
 
-    #[ORM\Column(type: 'integer', name: 'amazon_price')]
+    #[ORM\Column(type: 'string', name: 'amazon_price')]
     #[Groups(['cardprices:read','card:read'])]
-    private int $amazonPrice;
+    private string $amazonPrice;
 
-    #[ORM\Column(type: 'integer', name: 'coolstuffinc_price')]
+    #[ORM\Column(type: 'string', name: 'coolstuffinc_price')]
     #[Groups(['cardprices:read','card:read'])]
-    private int $coolstuffincPrice;
+    private string $coolstuffincPrice;
 
     #[ORM\ManyToMany(targetEntity: Cards::class, mappedBy: 'cardPrices')]
     #[Groups(['cardprices:read'])]
@@ -50,56 +50,56 @@ class CardPrice
         return $this->id;
     }
 
-    public function getCardmarketPrice(): int
+    public function getCardmarketPrice(): string
     {
         return $this->cardmarketPrice;
     }
 
-    public function setCardmarketPrice(int $cardmarketPrice): self
+    public function setCardmarketPrice(string $cardmarketPrice): self
     {
         $this->cardmarketPrice = $cardmarketPrice;
         return $this;
     }
 
-    public function getTcgplayerPrice(): int
+    public function getTcgplayerPrice(): string
     {
         return $this->tcgplayerPrice;
     }
 
-    public function setTcgplayerPrice(int $tcgplayerPrice): self
+    public function setTcgplayerPrice(string $tcgplayerPrice): self
     {
         $this->tcgplayerPrice = $tcgplayerPrice;
         return $this;
     }
 
-    public function getEbayPrice(): int
+    public function getEbayPrice(): string
     {
         return $this->ebayPrice;
     }
 
-    public function setEbayPrice(int $ebayPrice): self
+    public function setEbayPrice(string $ebayPrice): self
     {
         $this->ebayPrice = $ebayPrice;
         return $this;
     }
 
-    public function getAmazonPrice(): int
+    public function getAmazonPrice(): string
     {
         return $this->amazonPrice;
     }
 
-    public function setAmazonPrice(int $amazonPrice): self
+    public function setAmazonPrice(string $amazonPrice): self
     {
         $this->amazonPrice = $amazonPrice;
         return $this;
     }
 
-    public function getCoolstuffincPrice(): int
+    public function getCoolstuffincPrice(): string
     {
         return $this->coolstuffincPrice;
     }
 
-    public function setCoolstuffincPrice(int $coolstuffincPrice): self
+    public function setCoolstuffincPrice(string $coolstuffincPrice): self
     {
         $this->coolstuffincPrice = $coolstuffincPrice;
         return $this;

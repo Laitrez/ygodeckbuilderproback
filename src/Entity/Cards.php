@@ -277,7 +277,7 @@ class Cards
 
         return $this;
     }
-    ////////////////////////////////////format
+    ////////////////////////////////////format 
     public function getFormats(): Collection
     {
         return $this->formats;

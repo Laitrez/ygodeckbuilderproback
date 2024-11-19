@@ -20,21 +20,21 @@ class CardSets
     #[Groups(['cardSet:read','card:read'])]
     private string $setName;
 
-    #[ORM\Column(type: 'integer', name: 'set_code')]
+    #[ORM\Column(type: 'string', name: 'set_code')]
     #[Groups(['cardSet:read','card:read'])]
-    private int $setCode;
+    private string $setCode;
 
     #[ORM\Column(type: 'string', name: 'set_rarity')]
     #[Groups(['cardSet:read','card:read'])]
     private string $setRarity;
 
-    #[ORM\Column(type: 'integer', name: 'set_rarity_code')]
+    #[ORM\Column(type: 'string', name: 'set_rarity_code')]
     #[Groups(['cardSet:read','card:read'])]
-    private int $setRarity_code;
+    private string $setRarity_code;
 
-    #[ORM\Column(type: 'float', name: 'set_price')]
+    #[ORM\Column(type: 'string', name: 'set_price')]
     #[Groups(['cardSet:read','card:read'])]
-    private float $setPrice;
+    private string $setPrice;
 
     #[ORM\ManyToMany(targetEntity: Cards::class, mappedBy: 'cardSets')]
     #[Groups(['cardSet:read'])]
@@ -61,12 +61,12 @@ class CardSets
         return $this;
     }
 
-    public function getSetCode(): int
+    public function getSetCode(): string
     {
         return $this->setCode;
     }
 
-    public function setSetCode(int $setCode): self
+    public function setSetCode(string $setCode): self
     {
         $this->setCode = $setCode;
         return $this;
@@ -83,23 +83,23 @@ class CardSets
         return $this;
     }
 
-    public function getSetRarityCode(): int
+    public function getSetRarityCode(): string
     {
         return $this->setRarity_code;
     }
 
-    public function setSetRarityCode(int $setRarity_code): self
+    public function setSetRarityCode(string $setRarity_code): self
     {
         $this->setRarity_code = $setRarity_code;
         return $this;
     }
 
-    public function getSetPrice(): float
+    public function getSetPrice(): string
     {
         return $this->setPrice;
     }
 
-    public function setSetPrice(float $setPrice): self
+    public function setSetPrice(string $setPrice): self
     {
         $this->setPrice = $setPrice;
         return $this;

@@ -49,14 +49,11 @@ class CardController extends AbstractController
     {
         $cards = $this->entityManager->getRepository(Cards::class)->find($id);
         // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
+        // dd($cards);
 
         // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
         return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
     }
-
-
-
-
 
 
 
