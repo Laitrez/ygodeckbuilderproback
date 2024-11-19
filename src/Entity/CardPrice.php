@@ -2,7 +2,10 @@
 namespace App\Entity;
 
 use App\Repository\CardPriceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CardPriceRepository::class)]
 class CardPrice
@@ -13,19 +16,34 @@ class CardPrice
     private ?int $id = null;
 
     #[ORM\Column(type: 'integer', name: 'cardmarket_price')]
+    #[Groups(['cardprices:read','card:read'])]
     private int $cardmarketPrice;
 
     #[ORM\Column(type: 'integer', name: 'tcgplayer_price')]
+    #[Groups(['cardprices:read','card:read'])]
     private int $tcgplayerPrice;
 
     #[ORM\Column(type: 'integer', name: 'ebay_price')]
+    #[Groups(['cardprices:read','card:read'])]
     private int $ebayPrice;
 
     #[ORM\Column(type: 'integer', name: 'amazon_price')]
+    #[Groups(['cardprices:read','card:read'])]
     private int $amazonPrice;
 
     #[ORM\Column(type: 'integer', name: 'coolstuffinc_price')]
+    #[Groups(['cardprices:read','card:read'])]
     private int $coolstuffincPrice;
+
+    #[ORM\ManyToMany(targetEntity: Cards::class, mappedBy: 'cardPrices')]
+    #[Groups(['cardprices:read'])]
+    private Collection $cards;
+   
+   
+    public function __construct()
+    {
+        $this->cards = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,4 +104,29 @@ class CardPrice
         $this->coolstuffincPrice = $coolstuffincPrice;
         return $this;
     }
+    //////////////////////////////////////////////////card
+    public function getCards(): Collection
+    {
+        return $this->cards;
+    }
+
+    public function addCard(Cards $card): self
+    {
+        if (!$this->cards->contains($card)) {
+            $this->cards->add($card);
+            $card->addCardPrices($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCard(Cards $card): self
+    {
+        if ($this->cards->removeElement($card)) {
+            $card->removeCardPrices($this);
+        }
+
+        return $this;
+    }
+
 }

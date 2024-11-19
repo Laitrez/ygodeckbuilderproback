@@ -83,20 +83,50 @@ class Cards
     #[ORM\JoinTable(
         name: '_cardsetsrelation', 
         joinColumns: [
-            new ORM\JoinColumn(name: 'A', referencedColumnName: 'id') // Colonne de la table Card
+            new ORM\JoinColumn(name: 'A', referencedColumnName: 'id') 
         ], 
         inverseJoinColumns: [
-            new ORM\JoinColumn(name: 'B', referencedColumnName: 'id') // Colonne de la table CardSets
+            new ORM\JoinColumn(name: 'B', referencedColumnName: 'id') 
         ]
     )]
     #[Groups(['card:read'])]
     private Collection $cardSets;
+   
+    #[ORM\ManyToMany(targetEntity: Formats::class, inversedBy: 'cards')]
+    // #[ORM\JoinTable(name: '_cardsetsrelation')]
+    #[ORM\JoinTable(
+        name: '_cardformatsrelation', 
+        joinColumns: [
+            new ORM\JoinColumn(name: 'A', referencedColumnName: 'id') 
+        ], 
+        inverseJoinColumns: [
+            new ORM\JoinColumn(name: 'B', referencedColumnName: 'id') 
+        ]
+    )]
+    #[Groups(['card:read'])]
+    private Collection $formats;
+    
+    
+    #[ORM\ManyToMany(targetEntity: CardPrice::class, inversedBy: 'cards')]
+    #[ORM\JoinTable(
+        name: '_cardpricerelation', 
+        joinColumns: [
+            new ORM\JoinColumn(name: 'A', referencedColumnName: 'id') 
+        ], 
+        inverseJoinColumns: [
+            new ORM\JoinColumn(name: 'B', referencedColumnName: 'id') 
+        ]
+    )]
+    #[Groups(['card:read'])]
+    private Collection $cardPrices;
 
     public function __construct()
     {
         $this->deck_cards = new ArrayCollection();
         $this->userCards = new ArrayCollection();
         $this->cardSets = new ArrayCollection();
+        $this->formats = new ArrayCollection();
+        $this->cardPrices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -223,7 +253,7 @@ class Cards
     {
         return $this->userCards;
     }
-    ////////////////////////////////////
+    ////////////////////////////////////cardsets
     public function getCardSets(): Collection
     {
         return $this->cardSets;
@@ -243,6 +273,54 @@ class Cards
     {
         if ($this->cardSets->removeElement($set)) {
             $set->removeCard($this);
+        }
+
+        return $this;
+    }
+    ////////////////////////////////////format
+    public function getFormats(): Collection
+    {
+        return $this->formats;
+    }
+
+    public function addFormats(Formats $form): self
+    {
+        if (!$this->formats->contains($form)) {
+            $this->formats->add($form) ;
+            $form->addCard($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFormats(Formats $form): self
+    {
+        if ($this->formats->removeElement($form)) {
+            $form->removeCard($this);
+        }
+
+        return $this;
+    }
+    ////////////////////////////////////cardprice
+    public function getcardPrices(): Collection
+    {
+        return $this->cardPrices;
+    }
+
+    public function addCardPrices(CardPrice $price): self
+    {
+        if (!$this->cardPrices->contains($price)) {
+            $this->cardPrices->add($price) ;
+            $price->addCard($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCardPrices(CardPrice $price): self
+    {
+        if ($this->cardPrices->removeElement($price)) {
+            $price->removeCard($this);
         }
 
         return $this;
