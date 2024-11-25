@@ -22,6 +22,10 @@ class Cards
     #[ORM\Column(type: 'string')]
     #[Groups(['card:read', 'usercards:read', 'deck:read'])]
     private string $name;
+    
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['card:read', 'usercards:read', 'deck:read'])]
+    private string $ygo_id;
 
     #[ORM\Column(type: 'string')]
     #[Groups(['card:read'])]
@@ -142,6 +146,16 @@ class Cards
     public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
+    }
+    public function getYgoId(): string
+    {
+        return $this->ygo_id;
+    }
+
+    public function setYgoId(int $ygo_id): self
+    {
+        $this->ygo_id = $ygo_id;
         return $this;
     }
 
