@@ -44,6 +44,21 @@ class CardController extends AbstractController
     }
 
 
+    #[Route('/paginated', name: 'get_cards', methods:['GET']) ]
+    public function getCardsPaginated(Request $request,SerializerInterface $serializer): JsonResponse
+    {
+
+        $page = $request->query->get('page',1);
+        $limit = $request->query->get('limit', 30);
+
+        $offset= ($page - 1)* $limit;
+
+        $cards = $this->entityManager->getRepository(Cards::class)->findBy([],null,$limit,$offset);
+       
+            return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
+    }
+
+
     #[Route('/{id}', name: 'app_card', methods:['GET']) ]
     public function getCard(int $id,SerializerInterface $serializer): JsonResponse
     {
@@ -52,7 +67,7 @@ class CardController extends AbstractController
         // dd($cards);
 
         // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
-        return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
+        return $this->json([$cards], Response::HTTP_OK, [], ['groups' => 'card:read']);
     }
 
 
