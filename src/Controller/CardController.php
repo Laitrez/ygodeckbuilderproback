@@ -50,24 +50,41 @@ class CardController extends AbstractController
 
         $page = $request->query->get('page',1);
         $limit = $request->query->get('limit', 30);
-
+        
+        
+        $offset= ($page - 1)* $limit;
+        
+        $cards = $this->entityManager->getRepository(Cards::class)->findBy([],null,$limit,$offset);
+        
+        return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
+    }
+    
+    
+    #[Route('/search', name: 'app_card', methods:['GET']) ]
+    public function getCard(SerializerInterface $serializer,Request $request): JsonResponse
+    {
+        $searchTerme = $request->query->get('searchTerme', null);
+        // dd($searchTerme);
+        
+        $page = $request->query->get('page',null);
+        $limit = $request->query->get('limit', 30);
+        
         $offset= ($page - 1)* $limit;
 
-        $cards = $this->entityManager->getRepository(Cards::class)->findBy([],null,$limit,$offset);
-       
-            return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
-    }
+        $criteria = [];
+        if ($searchTerme) {
+            $criteria = ['name' => $searchTerme]; 
+        }
 
-
-    #[Route('/{id}', name: 'app_card', methods:['GET']) ]
-    public function getCard(int $id,SerializerInterface $serializer): JsonResponse
-    {
-        $cards = $this->entityManager->getRepository(Cards::class)->find($id);
+        
+        $cards = $this->entityManager->getRepository(Cards::class)->findBy($criteria,null,$limit,$offset);
+        // dd($cards);
+        // $cards = $this->entityManager->getRepository(Cards::class)->find($id);
         // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
         // dd($cards);
 
         // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
-        return $this->json([$cards], Response::HTTP_OK, [], ['groups' => 'card:read']);
+        return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
     }
 
 
