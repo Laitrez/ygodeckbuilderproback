@@ -42,19 +42,50 @@ class CardsRepository extends ServiceEntityRepository
     public function findBySearch(?string $searchterm, int $limit, int $offset ):array
     {
         $queryBuilder = $this->createQueryBuilder('c');
-        
+        $countQueryBuilder = clone $queryBuilder;
+
         if($searchterm){
             $queryBuilder->where('c.name LIKE :search ')
                         ->setParameter('search','%'.$searchterm.'%');
         }
+
+        $total=(int) $countQueryBuilder ->select('COUNT(c.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
         
+        $cards=$queryBuilder->setFirstResult($offset)
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
         
-        
-        
-        return $queryBuilder->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+        return [
+            'cards'=>$cards,
+            'total'=>$total,
+        ];
     }
+
+
+    public function findPaginated( int $limit, int $offset ):array
+    {
+        $queryBuilder = $this->createQueryBuilder('c');
+        $countQueryBuilder = clone $queryBuilder;      
+
+        $total=(int) $countQueryBuilder ->select('COUNT(c.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+        
+        $cards=$queryBuilder->setFirstResult($offset)
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
+        
+        return [
+            'cards'=>$cards,
+            'total'=>$total,
+        ];
+    }
+
+
+
 
 }

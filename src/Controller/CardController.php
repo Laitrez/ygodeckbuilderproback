@@ -23,7 +23,7 @@ class CardController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/', name: 'get_cards', methods:['GET']) ]
+    #[Route('/', name: 'get_cards', methods: ['GET'])]
     public function getCards(SerializerInterface $serializer): JsonResponse
     {
         $cards = $this->entityManager->getRepository(Cards::class)->findAll();
@@ -35,49 +35,55 @@ class CardController extends AbstractController
         //     'message' => 'Welcome to your new controller!',
         //     'path' => 'src/Controller/DeckController.php',
         // ]);
-            // Sérialiser les cartes avec les groupes définis pour exposer uniquement les champs désirés
-            // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
+        // Sérialiser les cartes avec les groupes définis pour exposer uniquement les champs désirés
+        // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
 
-            // Retourner une réponse JSON avec les cartes sérialisées
-            // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
-            return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
-    }
-
-
-    #[Route('/paginated', name: 'get_cards', methods:['GET']) ]
-    public function getCardsPaginated(Request $request,SerializerInterface $serializer): JsonResponse
-    {
-
-        $page = $request->query->get('page',1);
-        $limit = $request->query->get('limit', 30);
-        
-        
-        $offset= ($page - 1)* $limit;
-        
-        $cards = $this->entityManager->getRepository(Cards::class)->findBy([],null,$limit,$offset);
-        
+        // Retourner une réponse JSON avec les cartes sérialisées
+        // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
         return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
     }
-    
-    
-    #[Route('/search', name: 'app_card', methods:['GET']) ]
-    public function getCard(SerializerInterface $serializer,Request $request): JsonResponse
+
+
+    #[Route('/paginated', name: 'get_cards', methods: ['GET'])]
+    public function getCardsPaginated(Request $request, SerializerInterface $serializer): JsonResponse
+    {
+
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 30);
+
+
+        $offset = ($page - 1) * $limit;
+
+        // $cards = $this->entityManager->getRepository(Cards::class)->findBy([],null,$limit,$offset);
+        $result = $this->entityManager->getRepository(Cards::class)->findPaginated($limit, $offset);
+        $total = $result['total'];
+        $totalPages = ceil($total / $limit);
+
+        // return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
+        return $this->json([
+            'cards' => $result['cards'],
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalItems' => $total,
+        ], Response::HTTP_OK, [], ['groups' => 'card:read']);
+    }
+
+
+    #[Route('/search', name: 'app_card', methods: ['GET'])]
+    public function getCard(SerializerInterface $serializer, Request $request): JsonResponse
     {
         $searchTerme = $request->query->get('searchTerme', null);
         // dd($searchTerme);
-        
-        $page = $request->query->get('page',null);
+
+        $page = $request->query->get('page', null);
         $limit = $request->query->get('limit', 30);
-        
-        $offset= ($page - 1)* $limit;
 
-        $criteria = [];
-        if ($searchTerme) {
-            $criteria = ['name' => $searchTerme]; 
-        }
+        $offset = ($page - 1) * $limit;
 
-        
-        $cards = $this->entityManager->getRepository(Cards::class)->findBySearch($searchTerme,$limit,$offset);
+        // $criteria = [];
+        // if ($searchTerme) {
+        //     $criteria = ['name' => $searchTerme]; 
+        // }
 
         // $cards = $this->entityManager->getRepository(Cards::class)->findBy($criteria,null,$limit,$offset);
 
@@ -89,7 +95,19 @@ class CardController extends AbstractController
         // dd($cards);
 
         // return new JsonResponse($jsonCards, JsonResponse::HTTP_OK, [], true);
-        return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
+
+        $result = $this->entityManager->getRepository(Cards::class)->findBySearch($searchTerme, $limit, $offset);
+
+        $total = $result['total'];
+        $totalPages = ceil($total / $limit);
+        //  dd($result['cards']);   
+        // return $this->json($cards, Response::HTTP_OK, [], ['groups' => 'card:read']);
+        return $this->json([
+            'cards' => $result['cards'],
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalItems' => $total,
+        ], Response::HTTP_OK, [], ['groups' => 'card:read']);
     }
 
 
@@ -107,11 +125,10 @@ class CardController extends AbstractController
         return $this->json($cards, Response::HTTP_CREATED, ["Location" => $location]);
     }
 
-    
+
     #[Route('/cards/{id}', name: 'udpate_cards', methods: ['PUT'])]
     public function updateCard(Request $request, UrlGeneratorInterface $urlGenerator, SerializerInterface $serializer): JsonResponse
     {
         return new JsonResponse(['status' => 'Update created'], Response::HTTP_OK);
     }
-
 }
