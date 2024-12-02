@@ -42,12 +42,12 @@ class CardsRepository extends ServiceEntityRepository
     public function findBySearch(?string $searchterm, int $limit, int $offset ):array
     {
         $queryBuilder = $this->createQueryBuilder('c');
-        $countQueryBuilder = clone $queryBuilder;
-
+        
         if($searchterm){
             $queryBuilder->where('c.name LIKE :search ')
-                        ->setParameter('search','%'.$searchterm.'%');
+            ->setParameter('search','%'.$searchterm.'%');
         }
+        $countQueryBuilder = clone $queryBuilder;
 
         $total=(int) $countQueryBuilder ->select('COUNT(c.id)')
         ->getQuery()
