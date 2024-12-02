@@ -39,4 +39,22 @@ class CardsRepository extends ServiceEntityRepository
         ->getQuery()->getOneOrNullResult();
     }
 
+    public function findBySearch(?string $searchterm, int $limit, int $offset ):array
+    {
+        $queryBuilder = $this->createQueryBuilder('c');
+        
+        if($searchterm){
+            $queryBuilder->where('c.name LIKE :search ')
+                        ->setParameter('search','%'.$searchterm.'%');
+        }
+        
+        
+        
+        
+        return $queryBuilder->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

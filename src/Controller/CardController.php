@@ -77,7 +77,12 @@ class CardController extends AbstractController
         }
 
         
-        $cards = $this->entityManager->getRepository(Cards::class)->findBy($criteria,null,$limit,$offset);
+        $cards = $this->entityManager->getRepository(Cards::class)->findBySearch($searchTerme,$limit,$offset);
+
+        // $cards = $this->entityManager->getRepository(Cards::class)->findBy($criteria,null,$limit,$offset);
+
+
+
         // dd($cards);
         // $cards = $this->entityManager->getRepository(Cards::class)->find($id);
         // $jsonCards = $serializer->serialize($cards, 'json', ['groups' => 'card:read']);
